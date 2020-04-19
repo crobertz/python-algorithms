@@ -170,6 +170,24 @@ def skew_length(box,ydiag):
 
     return length
 
+def skew_lengths(box,ydiag):
+    """
+    Given a young diagram and a box, returns list of deletable skew lengths.
+    The skew diagram travels downward whenever possible.
+    """
+    lengths = []
+    length = 0
+    current = box
+    while current:
+        length += 1
+        if ydiag[current]['d']:
+            current = ydiag[current]['d']
+        else:
+            lengths.append(length)
+            current = ydiag[current]['l']
+
+    return lengths
+
 def delete_skew(box,length,ydiag):
     """
     Given a young diagram, delete a skew diagram starting at box and with given length.
@@ -277,7 +295,7 @@ def main():
 
     print("Terminal skew lengths:")
     for n in terminal(ydiag):
-        print("%d: %d" % (n,skew_length(n,ydiag)))
+        print("%d: %s" % (n,str(skew_lengths(n,ydiag)))
     print("Enter terminal to start deletion:")
     term = int(input())
     print("Enter length to delete:")
