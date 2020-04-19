@@ -75,7 +75,6 @@ def subshape(box,ydiag):
     """
     Given a young diagram and box in the diagram, returns shape of subdiagram whose top left corner starts at box
     """
-
     left_nodes = nodes_below(box,ydiag)
     subshape = []
     #iterate over rows of subdiagram
@@ -115,45 +114,11 @@ def size(ydiag):
     """
     return subdiag_size(1,ydiag)
 
-def subdiag(box,ydiag):
-    """
-    Given a box and a young diagram, return subdiagram starting at box with node numberings inherited from parent
-    """
-    subdiag = {}
-    start_nodes = nodes_below(box,ydiag)
-    #iterate over rows to add nodes
-    for node in start_nodes:
-        current = node
-        while current:
-            subdiag[current] = ydiag[current]
-            current = ydiag[current]['r']
-
-    return subdiag
-
 def terminal(ydiag):
     """
     Given a young diagram, return list of terminal nodes (i.e. nodes with no right neighbour)
     """
     return [node for node in ydiag if not ydiag[node]['r']]
-
-def delete_subdiag(box,ydiag):
-    """
-    Given a young diagram and a box, return a young diagram with the subdiagram starting at box deleted, with numbering respected from parent diagram
-    """
-    diagram = {}
-    start_nodes = nodes_below(min(ydiag),ydiag)
-    subdiagram = subdiag(box,ydiag)
-    for node in start_nodes:
-        current = node
-        while current and not current in subdiagram:
-            diagram[current] = {'r':None, 'd':None}
-            #print(diagram)
-            for key in diagram[current]:
-                if not ydiag[current][key] in subdiagram:
-                    diagram[current][key] = ydiag[current][key]
-            current = ydiag[current]['r']
-
-    return diagram
 
 def skew_lengths(box,ydiag):
     """
