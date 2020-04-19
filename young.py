@@ -143,20 +143,6 @@ def delete_subdiag(box,ydiag):
 
     return diagram
 
-def skew_length(box,ydiag):
-    """
-    Given a young diagram and a box, returns length of longest skew diagram starting at box .
-    The skew diagram travels downward whenever possible.
-    """
-    length = 0
-    current = box
-    while current:
-        length += 1
-        if current['d']:
-            current = current['d']
-        else:
-            current = current['l']
-
 # def delete_skew():
 #     """
 #     Given a young diagram, delete a skew diagram
@@ -223,11 +209,6 @@ def main():
     print(shape(ydiag))
     print("Corresponding Young diagram:")
     print(ydiag)
-
-    print("Enter box to find skew diagram:")
-    box = input()
-    print("Skew length from box %d: %d" % (box, skew_length(box,ydiag)))
-
     # print("Size of diagram: " + str(size(ydiag)))
     # print("Height of diagram: " + str(height(ydiag)))
     # print("Enter box to find subshape:")
