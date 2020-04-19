@@ -1,4 +1,4 @@
-def partitionlist(partition):
+def partitiontolist(partition):
     """
     Given a partition of a positive integer n, returns list of lists where each element is an increasing list of integers.
 
@@ -14,10 +14,11 @@ def partitionlist(partition):
 
     return return_list
 
+
 def main():
     print("Enter a parition in decreasing order:")
     partition = [int(n) for n in input().split()]
-    print(partitionlist(partition))
+    print(partitiontolist(partition))
 
 if __name__ == '__main__':
     main()
