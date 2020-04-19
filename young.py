@@ -155,25 +155,9 @@ def delete_subdiag(box,ydiag):
 
     return diagram
 
-# def skew_length(box,ydiag):
-#     """
-#     Given a young diagram and a box, returns length of longest skew diagram starting at box .
-#     The skew diagram travels downward whenever possible.
-#     """
-#     length = 0
-#     current = box
-#     while current:
-#         length += 1
-#         if ydiag[current]['d']:
-#             current = ydiag[current]['d']
-#         else:
-#             current = ydiag[current]['l']
-#
-#     return length
-
 def skew_lengths(box,ydiag):
     """
-    Given a young diagram and a box, returns list of deletable skew lengths.
+    Given a young diagram and a box, returns list of deletable skew lengths, where deletable length means upon deletion of given length diagram leaves a valid young diagram.
     The skew diagram travels downward whenever possible.
     """
     lengths = []
@@ -189,10 +173,9 @@ def skew_lengths(box,ydiag):
 
     return lengths
 
-#bug in deletion code
 def delete_skew(box,length,ydiag):
     """
-    Given a young diagram, delete a skew diagram starting at box and with given length.
+    Given a young diagram, delete a skew diagram starting at box and with given deletable length.
     Return new diagram with skew diagram deleted along with height of deleted skew diagram.
     Skew diagrams travel down whenever possible.
     """
@@ -211,26 +194,19 @@ def delete_skew(box,length,ydiag):
             diag[diag[current]['l']]['r'] = None
         if diag[current]['d']:
             diag[diag[current]['d']]['u'] = None
-        #print("current: " + str(current))
-        #print(diag[current]['d'])
-        #print(diag[current]['l'])
 
         #update current node. travel down whenever possible
         temp = current
         if diag[current]['d']:
             current = diag[current]['d']
             height += 1
-            #print(current)
         else:
             current = diag[current]['l']
-            #print(current)
         del diag[temp]
 
     return diag, height
 
 
-
-#need a search for skew: start at terminal node and go left while going down whenever possible
 
 def height(ydiag):
     """
@@ -243,11 +219,6 @@ def character(lambd,rho):
     Given two partitions lambd, rho, computes chi^lambd(rho) using recursive Murnaghan-Nakayama rule.
     """
     #check inputs
-    # print("lambd:")
-    # print(lambd)
-    # print("rho:")
-    # print(rho)
-
     sum1 = 0
     sum2 = 0
     for n in lambd:
@@ -265,79 +236,25 @@ def character(lambd,rho):
 
     #create young diagram corresponding to lambd
     diag = make_youngdiag(lambd)
-    #print(diag)
-    #print(shape(diag))
 
-    # #populate subdiagram sizes
-    # for node in diag:
-    #     #diag[node]['subsize'] = subdiag_size(node,diag)
-    #     if subdiag_size(node,diag) == rho[0]:
-    #         #for each subdiagram with size equal to first entry of rho, delete subdiagram and recurse
-    #         to_delete = subdiag(node,diag)
-    #         deleted = delete_subdiag(node,diag)
-    #         #print(to_delete)
-    #         #print(shape(to_delete))
-    #         #print(deleted)
-    #         #print(shape(deleted))
-    #         charval += ((-1)**height(to_delete))*character(shape(delete_subdiag(node,diag)),rho[1:])
-
+    #recurse over deletable skew diagrams whose length is rho[0]
     for node in terminal(diag):
         if rho[0] in skew_lengths(node,diag):
             deleted, height = delete_skew(node,rho[0],diag)
-            #print(diag)
-            #print(deleted)
             charval += ((-1)**height)*character(shape(deleted),rho[1:])
 
-    #for node in terminal(diag):
-
-    #print(charval)
-    #print(diag)
     return charval
 
 
 def main():
     print("Enter a partition in decreasing order:")
-    partition = [int(n) for n in input().split()]
-    print("lambda = " + str(partition))
-    print("Partition:")
-    print(partition_to_list(partition))
-    ydiag = make_youngdiag(partition)
-    # print("Shape:")
-    # print(shape(ydiag))
-    # print("Corresponding Young diagram:")
-    # print(ydiag)
-
-    # print("Enter box to find skew diagram:")
-    # box = int(input())
-    # print("Skew length from box %d: %d" % (box, skew_length(box,ydiag)))
-
-    # print("Terminal skew lengths:")
-    # for n in terminal(ydiag):
-    #     print("%d: %s" % (n,str(skew_lengths(n,ydiag))))
-    # print("Enter terminal to start deletion:")
-    # term = int(input())
-    # print("Enter length to delete:")
-    # del_length = int(input())
-    # print(delete_skew(term,del_length,ydiag))
-
-    # print("Size of diagram: " + str(size(ydiag)))
-    # print("Height of diagram: " + str(height(ydiag)))
-    # print("Enter box to find subshape:")
-    # n = int(input())
-    # print("Shape of subdiagram starting at %d:" % n)
-    # print(subshape(n,ydiag))
-    # print("Size of subdiagram at %d: %d" % (n,subdiag_size(n,ydiag)))
-    # print("Subdiagram:")
-    # print(subdiag(n,ydiag))
-    # print("Diagram with sub deleted:")
-    # print(delete_subdiag(n,ydiag))
-    # print("Shape of diagram with sub deleted:")
-    # print(shape(delete_subdiag(n,ydiag)))
-
+    lambd = [int(n) for n in input().split()]
+    print("lambda = " + str(lambd))
+    ydiag = make_youngdiag(lambd)
     print("Enter another partition in decreasing order:")
-    partition2 = [int(n) for n in input().split()]
-    print("rho = " + str(partition2))
-    print("Character value: chi^lambda(rho) = " + str(character(partition,partition2)))
+    rho = [int(n) for n in input().split()]
+    print("rho = " + str(rho))
+    print("Character value: chi^lambda(rho) = " + str(character(lambd,rho)))
 
 if __name__ == '__main__':
     main()
