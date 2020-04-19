@@ -77,6 +77,12 @@ def subshape(box,ydiag):
 
     return subshape
 
+def shape(ydiag):
+    """
+    Given a young diagram return its shape
+    """
+    return subshape(1,ydiag)
+
 def subdiag_size(box,ydiag):
     """
     Given a young diagram and box in the diagram, returns size of subdiagram whose top left corner starts at box
@@ -118,8 +124,9 @@ def delete_subdiag(box,ydiag):
     subdiagram = subdiag(box,ydiag)
     for node in start_nodes:
         current = node
-        while not current in subdiagram:
+        while current and not current in subdiagram:
             diagram[current] = {'r':None, 'd':None}
+            #print(diagram)
             for key in diagram[current]:
                 if not ydiag[current][key] in subdiagram:
                     diagram[current][key] = ydiag[current][key]
@@ -127,6 +134,11 @@ def delete_subdiag(box,ydiag):
 
     return diagram
 
+def height(ydiag):
+    """
+    Given a young diagram returns its height
+    """
+    return len(nodes_below(1,ydiag)) - 1
 
 
 def main():
@@ -138,6 +150,7 @@ def main():
     print("Corresponding Young diagram:")
     print(ydiag)
     print("Size of diagram: " + str(size(ydiag)))
+    print("Height of diagram: " + str(height(ydiag)))
     print("Enter box to find subshape:")
     n = int(input())
     print("Shape of subdiagram starting at %d:" % n)
@@ -147,6 +160,8 @@ def main():
     print(subdiag(n,ydiag))
     print("Diagram with sub deleted:")
     print(delete_subdiag(n,ydiag))
+    print("Shape of diagram with sub deleted:")
+    print(shape(delete_subdiag(n,ydiag)))
 
 if __name__ == '__main__':
     main()
