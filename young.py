@@ -52,9 +52,9 @@ def nodes_below(box,ydiag):
     Given a young diagram and a box, return list of nodes below and including box
     """
     current = box
-    nodes = [current]
-    while ydiag[current]['d']:
-        nodes.append(ydiag[current]['d'])
+    nodes = []
+    while current:
+        nodes.append(current)
         current = ydiag[current]['d']
 
     return nodes
