@@ -17,6 +17,10 @@ def partitiontolist(partition):
 def makeyoungdiag(partition):
     """
     Given a partition, return corresponding Young diagram implemented as a graph
+
+    Each Young diagram is a dictionary,
+    The value of each key is a dictionary whose value at key 'r' is the right descendant while the value at key 'd' is the down descendant.
+    If there are no corresponding descendant then the value is None.
     """
     diagram = {}
     parts_list = partitiontolist(partition)
@@ -33,15 +37,41 @@ def makeyoungdiag(partition):
 
         #if not the last element in part, add descendant
         for k in range(part_length):
-            diagram[part[k]] = set()
+            diagram[part[k]] = {'r':None, 'd':None}
             #add descendant to right
             if k + 1 < part_length:
-                diagram[part[k]].add(part[k+1])
+                diagram[part[k]]['r'] = part[k+1]
             #add descendant below
             if k < part_length_next:
-                diagram[part[k]].add(next_part[k])
+                diagram[part[k]]['d'] = next_part[k]
 
     return diagram
+
+def subshape(box,ydiag):
+    """
+    Given a young diagram and box in the diagram, return shape of subdiagram whose top left corner starts at box
+    """
+
+    left_nodes = []
+    current = box
+    left_nodes.append(current)
+    while ydiag[current]['d']:
+        left_nodes.append(ydiag[current]['d'])
+        current = ydiag[current]['d']
+    #print("left nodes: " + str(left_nodes))
+
+    subshape = []
+    for node in left_nodes:
+        shape = 1
+        current = node
+        while ydiag[current]['r']:
+            current = ydiag[current]['r']
+            shape += 1
+        subshape.append(shape)
+    #print("subshape: " + str(subshape))
+
+    return subshape
+
 
 
 def main():
@@ -52,6 +82,10 @@ def main():
     ydiag = makeyoungdiag(partition)
     print("Corresponding Young diagram:")
     print(ydiag)
+    n = int(input())
+    print("Shape of subdiagram starting at %d:" % n)
+    print(subshape(n,ydiag))
+
 
 if __name__ == '__main__':
     main()
