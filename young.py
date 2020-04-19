@@ -21,7 +21,7 @@ def make_youngdiag(partition):
     Given a partition, return corresponding Young diagram implemented as a graph
 
     Each Young diagram is a dictionary,
-    The value of each key is a dictionary whose value at key 'r' is the right descendant while the value at key 'd' is the down descendant.
+    The value of each key is a dictionary whose value at keys 'r', 'd', 'l', 'u' are the right, down, left, up descendants respectively
     If there are no corresponding descendant then the value is None.
     """
     #add data of 'up' neighbour and 'left' neighbour?
@@ -37,10 +37,13 @@ def make_youngdiag(partition):
         if index + 1 < len(partition):
             next_part = parts_list[index + 1]
         part_length_next = len(next_part)
+        prev_part = []
+        if index > 0:
+            prev_part = parts_list[index - 1]
 
         #if not the last element in part, add descendant
         for k in range(part_length):
-            diagram[part[k]] = {'r':None, 'd':None, 'l':None}
+            diagram[part[k]] = {'r':None, 'd':None, 'l':None, 'u':None}
             #add descendant to right
             if k + 1 < part_length:
                 diagram[part[k]]['r'] = part[k+1]
@@ -50,6 +53,8 @@ def make_youngdiag(partition):
             #add left parent
             if k > 0:
                 diagram[part[k]]['l'] = part[k-1]
+            if prev_part:
+                diagram[part[k]]['u'] = prev_part[k]
 
     return diagram
 
@@ -124,6 +129,12 @@ def subdiag(box,ydiag):
 
     return subdiag
 
+def terminal(ydiag):
+    """
+    Given a young diagram, return list of terminal nodes (i.e. nodes with no right neighbour)
+    """
+    return [node for node in ydiag if not ydiag[node]['r']]
+
 def delete_subdiag(box,ydiag):
     """
     Given a young diagram and a box, return a young diagram with the subdiagram starting at box deleted, with numbering respected from parent diagram
@@ -143,10 +154,58 @@ def delete_subdiag(box,ydiag):
 
     return diagram
 
-# def delete_skew():
-#     """
-#     Given a young diagram, delete a skew diagram
-#     """
+def skew_length(box,ydiag):
+    """
+    Given a young diagram and a box, returns length of longest skew diagram starting at box .
+    The skew diagram travels downward whenever possible.
+    """
+    length = 0
+    current = box
+    while current:
+        length += 1
+        if ydiag[current]['d']:
+            current = ydiag[current]['d']
+        else:
+            current = ydiag[current]['l']
+
+    return length
+
+def delete_skew(box,length,ydiag):
+    """
+    Given a young diagram, delete a skew diagram starting at box and with given length.
+    Skew diagrams travel down whenever possible.
+    """
+
+    diag = ydiag.copy()
+    current = box
+
+    for n in range(length):
+        #print("loop count " + str(n))
+
+        #update neighbours
+        if diag[current]['u']:
+            diag[diag[current]['u']]['d'] = None
+        if diag[current]['l']:
+            diag[diag[current]['l']]['r'] = None
+        if diag[current]['d']:
+            diag[diag[current]['d']]['u'] = None
+        #print("current: " + str(current))
+        #print(diag[current]['d'])
+        #print(diag[current]['l'])
+
+        #update current node. travel down whenever possible
+        temp = current
+        if diag[current]['d']:
+            current = diag[current]['d']
+            #print(current)
+        else:
+            current = diag[current]['l']
+            #print(current)
+        del diag[temp]
+
+    return diag
+
+
 
 #need a search for skew: start at terminal node and go left while going down whenever possible
 
@@ -180,18 +239,20 @@ def character(lambd,rho):
     diag = make_youngdiag(lambd)
     #print(shape(diag))
 
-    #populate subdiagram sizes
-    for node in diag:
-        #diag[node]['subsize'] = subdiag_size(node,diag)
-        if subdiag_size(node,diag) == rho[0]:
-            #for each subdiagram with size equal to first entry of rho, delete subdiagram and recurse
-            to_delete = subdiag(node,diag)
-            deleted = delete_subdiag(node,diag)
-            #print(to_delete)
-            #print(shape(to_delete))
-            #print(deleted)
-            #print(shape(deleted))
-            charval += ((-1)**height(to_delete))*character(shape(delete_subdiag(node,diag)),rho[1:])
+    # #populate subdiagram sizes
+    # for node in diag:
+    #     #diag[node]['subsize'] = subdiag_size(node,diag)
+    #     if subdiag_size(node,diag) == rho[0]:
+    #         #for each subdiagram with size equal to first entry of rho, delete subdiagram and recurse
+    #         to_delete = subdiag(node,diag)
+    #         deleted = delete_subdiag(node,diag)
+    #         #print(to_delete)
+    #         #print(shape(to_delete))
+    #         #print(deleted)
+    #         #print(shape(deleted))
+    #         charval += ((-1)**height(to_delete))*character(shape(delete_subdiag(node,diag)),rho[1:])
+
+    #for node in terminal(diag):
 
     #print(charval)
     #print(diag)
@@ -209,6 +270,20 @@ def main():
     print(shape(ydiag))
     print("Corresponding Young diagram:")
     print(ydiag)
+
+    # print("Enter box to find skew diagram:")
+    # box = int(input())
+    # print("Skew length from box %d: %d" % (box, skew_length(box,ydiag)))
+
+    print("Terminal skew lengths:")
+    for n in terminal(ydiag):
+        print("%d: %d" % (n,skew_length(n,ydiag)))
+    print("Enter terminal to start deletion:")
+    term = int(input())
+    print("Enter length to delete:")
+    del_length = int(input())
+    print(delete_skew(term,del_length,ydiag))
+
     # print("Size of diagram: " + str(size(ydiag)))
     # print("Height of diagram: " + str(height(ydiag)))
     # print("Enter box to find subshape:")
