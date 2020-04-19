@@ -94,10 +94,34 @@ def size(ydiag):
     """
     return subdiag_size(1,ydiag)
 
+def subdiag(box,ydiag):
+    """
+    Given a box and a young diagram, return subdiagram starting at box with node numberings inherited from parent
+    """
+    subdiag = {}
+    start_nodes = nodes_below(box,ydiag)
+    #iterate over rows to add nodes
+    for node in start_nodes:
+        current = node
+        while current:
+            subdiag[current] = ydiag[current]
+            current = ydiag[current]['r']
+
+    return subdiag
+
 def delete_subdiag(box,ydiag):
     """
     Given a young diagram and a box, return a young diagram with the subdiagram starting at box deleted
     """
+    diagram = {}
+    start_nodes = nodes_below(1,ydiag)
+    stop_nodes = nodes_below(box,ydiag)
+    for node in start_nodes:
+        if node in stop_nodes:
+            pass
+        else:
+            pass
+
 
 
 def main():
@@ -114,6 +138,8 @@ def main():
     print("Shape of subdiagram starting at %d:" % n)
     print(subshape(n,ydiag))
     print("Size of subdiagram at %d: %d" % (n,subdiag_size(n,ydiag)))
+    print("Subdiagram:")
+    print(subdiag(n,ydiag))
 
 
 if __name__ == '__main__':
