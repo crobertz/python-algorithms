@@ -1,6 +1,7 @@
 import sys
 import copy
 
+
 def partition_to_list(partition):
     """
     Given a partition of a positive integer n, returns list of lists where each element is an increasing list of integers.
@@ -11,11 +12,12 @@ def partition_to_list(partition):
     return_list = []
     current = 0
     for part in partition:
-        part_list = [current + i for i in range(1,part+1)]
+        part_list = [current + i for i in range(1, part+1)]
         current = part_list[-1]
         return_list.append(part_list)
 
     return return_list
+
 
 def make_youngdiag(partition):
     """
@@ -25,11 +27,11 @@ def make_youngdiag(partition):
     The value of each key is a dictionary whose value at keys 'r', 'd', 'l', 'u' are the right, down, left, up descendants respectively
     If there are no corresponding descendant then the value is None.
     """
-    #add data of 'up' neighbour and 'left' neighbour?
+    # add data of 'up' neighbour and 'left' neighbour?
     diagram = {}
     parts_list = partition_to_list(partition)
 
-    #loop for each part in partition
+    # loop for each part in partition
     for index in range(len(partition)):
         part = parts_list[index]
         part_length = partition[index]
@@ -42,16 +44,16 @@ def make_youngdiag(partition):
         if index > 0:
             prev_part = parts_list[index - 1]
 
-        #if not the last element in part, add descendant
+        # if not the last element in part, add descendant
         for k in range(part_length):
-            diagram[part[k]] = {'r':None, 'd':None, 'l':None, 'u':None}
-            #add descendant to right
+            diagram[part[k]] = {'r': None, 'd': None, 'l': None, 'u': None}
+            # add descendant to right
             if k + 1 < part_length:
                 diagram[part[k]]['r'] = part[k+1]
-            #add descendant below
+            # add descendant below
             if k < part_length_next:
                 diagram[part[k]]['d'] = next_part[k]
-            #add left parent
+            # add left parent
             if k > 0:
                 diagram[part[k]]['l'] = part[k-1]
             if prev_part:
@@ -59,7 +61,8 @@ def make_youngdiag(partition):
 
     return diagram
 
-def nodes_below(box,ydiag):
+
+def nodes_below(box, ydiag):
     """
     Given a young diagram and a box, return list of nodes below and including box
     """
@@ -71,13 +74,14 @@ def nodes_below(box,ydiag):
 
     return nodes
 
-def subshape(box,ydiag):
+
+def subshape(box, ydiag):
     """
     Given a young diagram and box in the diagram, returns shape of subdiagram whose top left corner starts at box
     """
-    left_nodes = nodes_below(box,ydiag)
+    left_nodes = nodes_below(box, ydiag)
     subshape = []
-    #iterate over rows of subdiagram
+    # iterate over rows of subdiagram
     for node in left_nodes:
         shape = 1
         current = node
@@ -88,31 +92,35 @@ def subshape(box,ydiag):
 
     return subshape
 
+
 def shape(ydiag):
     """
     Given a young diagram return its shape
     """
     if ydiag:
-        return subshape(min(ydiag),ydiag)
+        return subshape(min(ydiag), ydiag)
     else:
         return []
 
-def subdiag_size(box,ydiag):
+
+def subdiag_size(box, ydiag):
     """
     Given a young diagram and box in the diagram, returns size of subdiagram whose top left corner starts at box
     """
 
-    shape = subshape(box,ydiag)
+    shape = subshape(box, ydiag)
     size = 0
     for n in shape:
         size += n
     return size
 
+
 def size(ydiag):
     """
     Return size of diagram
     """
-    return subdiag_size(1,ydiag)
+    return subdiag_size(1, ydiag)
+
 
 def terminal(ydiag):
     """
@@ -120,7 +128,8 @@ def terminal(ydiag):
     """
     return [node for node in ydiag if not ydiag[node]['r']]
 
-def skew_lengths(box,ydiag):
+
+def skew_lengths(box, ydiag):
     """
     Given a young diagram and a box, returns list of deletable skew lengths, where deletable length means upon deletion of given length diagram leaves a valid young diagram.
     The skew diagram travels downward whenever possible.
@@ -138,7 +147,8 @@ def skew_lengths(box,ydiag):
 
     return lengths
 
-def delete_skew(box,length,ydiag):
+
+def delete_skew(box, length, ydiag):
     """
     Given a young diagram, delete a skew diagram starting at box and with given deletable length.
     Return new diagram with skew diagram deleted along with height of deleted skew diagram.
@@ -150,9 +160,9 @@ def delete_skew(box,length,ydiag):
     height = 0
 
     for n in range(length):
-        #print("loop count " + str(n))
+        # print("loop count " + str(n))
 
-        #update neighbours
+        # update neighbours
         if diag[current]['u']:
             diag[diag[current]['u']]['d'] = None
         if diag[current]['l']:
@@ -160,7 +170,7 @@ def delete_skew(box,length,ydiag):
         if diag[current]['d']:
             diag[diag[current]['d']]['u'] = None
 
-        #update current node. travel down whenever possible
+        # update current node. travel down whenever possible
         temp = current
         if diag[current]['d']:
             current = diag[current]['d']
@@ -172,18 +182,18 @@ def delete_skew(box,length,ydiag):
     return diag, height
 
 
-
 def height(ydiag):
     """
     Given a young diagram returns its height
     """
-    return len(nodes_below(min(ydiag),ydiag)) - 1
+    return len(nodes_below(min(ydiag), ydiag)) - 1
 
-def character(lambd,rho):
+
+def character(lambd, rho):
     """
     Given two partitions lambd, rho, computes chi^lambd(rho) using recursive Murnaghan-Nakayama rule.
     """
-    #check inputs
+    # check inputs
     sum1 = 0
     sum2 = 0
     for n in lambd:
@@ -193,20 +203,20 @@ def character(lambd,rho):
     if sum1 != sum2:
         sys.exit("Need two partitions of same integer")
 
-    #base case for recursion
+    # base case for recursion
     if len(lambd) == 0:
         return 1
 
     charval = 0
 
-    #create young diagram corresponding to lambd
+    # create young diagram corresponding to lambd
     diag = make_youngdiag(lambd)
 
-    #recurse over deletable skew diagrams whose length is rho[0]
+    # recurse over deletable skew diagrams whose length is rho[0]
     for node in terminal(diag):
-        if rho[0] in skew_lengths(node,diag):
-            deleted, height = delete_skew(node,rho[0],diag)
-            charval += ((-1)**height)*character(shape(deleted),rho[1:])
+        if rho[0] in skew_lengths(node, diag):
+            deleted, height = delete_skew(node, rho[0], diag)
+            charval += ((-1)**height)*character(shape(deleted), rho[1:])
 
     return charval
 
@@ -215,11 +225,11 @@ def main():
     print("Enter a partition in decreasing order:")
     lambd = [int(n) for n in input().split()]
     print("lambda = " + str(lambd))
-    ydiag = make_youngdiag(lambd)
     print("Enter another partition in decreasing order:")
     rho = [int(n) for n in input().split()]
     print("rho = " + str(rho))
-    print("Character value: chi^lambda(rho) = " + str(character(lambd,rho)))
+    print("Character value: chi^lambda(rho) = " + str(character(lambd, rho)))
+
 
 if __name__ == '__main__':
     main()
