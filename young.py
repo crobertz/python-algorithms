@@ -23,7 +23,7 @@ def make_youngdiag(partition):
     If there are no corresponding descendant then the value is None.
     """
     diagram = {}
-    parts_list = partitiontolist(partition)
+    parts_list = partition_to_list(partition)
 
     #loop for each part in partition
     for index in range(len(partition)):
@@ -47,20 +47,26 @@ def make_youngdiag(partition):
 
     return diagram
 
+def nodes_below(box,ydiag):
+    """
+    Given a young diagram and a box, return list of nodes below and including box
+    """
+    current = box
+    nodes = [current]
+    while ydiag[current]['d']:
+        nodes.append(ydiag[current]['d'])
+        current = ydiag[current]['d']
+
+    return nodes
+
 def subshape(box,ydiag):
     """
     Given a young diagram and box in the diagram, returns shape of subdiagram whose top left corner starts at box
     """
 
-    left_nodes = []
-    current = box
-    left_nodes.append(current)
-    while ydiag[current]['d']:
-        left_nodes.append(ydiag[current]['d'])
-        current = ydiag[current]['d']
-    #print("left nodes: " + str(left_nodes))
-
+    left_nodes = nodes_below(box,ydiag)
     subshape = []
+    #iterate over rows of subdiagram
     for node in left_nodes:
         shape = 1
         current = node
@@ -68,7 +74,6 @@ def subshape(box,ydiag):
             current = ydiag[current]['r']
             shape += 1
         subshape.append(shape)
-    #print("subshape: " + str(subshape))
 
     return subshape
 
@@ -82,6 +87,11 @@ def subdiag_size(box,ydiag):
     for n in shape:
         size += n
     return size
+
+def delete_subdiag(box,ydiag):
+    """
+    Given a young diagram and a box, return a young diagram with the subdiagram starting at box deleted
+    """
 
 
 def main():
