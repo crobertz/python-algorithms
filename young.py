@@ -1,3 +1,5 @@
+import sys
+
 def partition_to_list(partition):
     """
     Given a partition of a positive integer n, returns list of lists where each element is an increasing list of integers.
@@ -22,6 +24,7 @@ def make_youngdiag(partition):
     The value of each key is a dictionary whose value at key 'r' is the right descendant while the value at key 'd' is the down descendant.
     If there are no corresponding descendant then the value is None.
     """
+    #add data of 'up' neighbour and 'left' neighbour?
     diagram = {}
     parts_list = partition_to_list(partition)
 
@@ -37,13 +40,16 @@ def make_youngdiag(partition):
 
         #if not the last element in part, add descendant
         for k in range(part_length):
-            diagram[part[k]] = {'r':None, 'd':None}
+            diagram[part[k]] = {'r':None, 'd':None, 'l':None}
             #add descendant to right
             if k + 1 < part_length:
                 diagram[part[k]]['r'] = part[k+1]
             #add descendant below
             if k < part_length_next:
                 diagram[part[k]]['d'] = next_part[k]
+            #add left parent
+            if k > 0:
+                diagram[part[k]]['l'] = part[k-1]
 
     return diagram
 
@@ -81,7 +87,10 @@ def shape(ydiag):
     """
     Given a young diagram return its shape
     """
-    return subshape(1,ydiag)
+    if ydiag:
+        return subshape(min(ydiag),ydiag)
+    else:
+        return []
 
 def subdiag_size(box,ydiag):
     """
@@ -120,7 +129,7 @@ def delete_subdiag(box,ydiag):
     Given a young diagram and a box, return a young diagram with the subdiagram starting at box deleted, with numbering respected from parent diagram
     """
     diagram = {}
-    start_nodes = nodes_below(1,ydiag)
+    start_nodes = nodes_below(min(ydiag),ydiag)
     subdiagram = subdiag(box,ydiag)
     for node in start_nodes:
         current = node
@@ -134,34 +143,90 @@ def delete_subdiag(box,ydiag):
 
     return diagram
 
+# def delete_skew():
+#     """
+#     Given a young diagram, delete a skew diagram
+#     """
+
+#need a search for skew: start at terminal node and go left while going down whenever possible
+
 def height(ydiag):
     """
     Given a young diagram returns its height
     """
-    return len(nodes_below(1,ydiag)) - 1
+    return len(nodes_below(min(ydiag),ydiag)) - 1
+
+def character(lambd,rho):
+    """
+    Given two partitions lambd, rho, computes chi^lambd(rho) using recursive Murnaghan-Nakayama rule.
+    """
+    #check inputs
+    sum1 = 0
+    sum2 = 0
+    for n in lambd:
+        sum1 += n
+    for n in rho:
+        sum2 += n
+    if sum1 != sum2:
+        sys.exit("Need two partitions of same integer")
+
+    #base case for recursion
+    if len(lambd) == 0:
+        return 1
+
+    charval = 0
+
+    #create young diagram corresponding to lambd
+    diag = make_youngdiag(lambd)
+    #print(shape(diag))
+
+    #populate subdiagram sizes
+    for node in diag:
+        #diag[node]['subsize'] = subdiag_size(node,diag)
+        if subdiag_size(node,diag) == rho[0]:
+            #for each subdiagram with size equal to first entry of rho, delete subdiagram and recurse
+            to_delete = subdiag(node,diag)
+            deleted = delete_subdiag(node,diag)
+            #print(to_delete)
+            #print(shape(to_delete))
+            #print(deleted)
+            #print(shape(deleted))
+            charval += ((-1)**height(to_delete))*character(shape(delete_subdiag(node,diag)),rho[1:])
+
+    #print(charval)
+    #print(diag)
+    return charval
 
 
 def main():
     print("Enter a parition in decreasing order:")
     partition = [int(n) for n in input().split()]
+    print("lambda = " + str(partition))
     print("Partition:")
     print(partition_to_list(partition))
     ydiag = make_youngdiag(partition)
+    print("Shape:")
+    print(shape(ydiag))
     print("Corresponding Young diagram:")
     print(ydiag)
-    print("Size of diagram: " + str(size(ydiag)))
-    print("Height of diagram: " + str(height(ydiag)))
-    print("Enter box to find subshape:")
-    n = int(input())
-    print("Shape of subdiagram starting at %d:" % n)
-    print(subshape(n,ydiag))
-    print("Size of subdiagram at %d: %d" % (n,subdiag_size(n,ydiag)))
-    print("Subdiagram:")
-    print(subdiag(n,ydiag))
-    print("Diagram with sub deleted:")
-    print(delete_subdiag(n,ydiag))
-    print("Shape of diagram with sub deleted:")
-    print(shape(delete_subdiag(n,ydiag)))
+    # print("Size of diagram: " + str(size(ydiag)))
+    # print("Height of diagram: " + str(height(ydiag)))
+    # print("Enter box to find subshape:")
+    # n = int(input())
+    # print("Shape of subdiagram starting at %d:" % n)
+    # print(subshape(n,ydiag))
+    # print("Size of subdiagram at %d: %d" % (n,subdiag_size(n,ydiag)))
+    # print("Subdiagram:")
+    # print(subdiag(n,ydiag))
+    # print("Diagram with sub deleted:")
+    # print(delete_subdiag(n,ydiag))
+    # print("Shape of diagram with sub deleted:")
+    # print(shape(delete_subdiag(n,ydiag)))
+
+    # print("Enter another partition in decreasing order:")
+    # partition2 = [int(n) for n in input().split()]
+    # print("rho = " + str(partition2))
+    # print("Character value: chi^lambda(rho) = " + str(character(partition,partition2)))
 
 if __name__ == '__main__':
     main()
