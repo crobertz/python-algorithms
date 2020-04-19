@@ -111,16 +111,21 @@ def subdiag(box,ydiag):
 
 def delete_subdiag(box,ydiag):
     """
-    Given a young diagram and a box, return a young diagram with the subdiagram starting at box deleted
+    Given a young diagram and a box, return a young diagram with the subdiagram starting at box deleted, with numbering respected from parent diagram
     """
     diagram = {}
     start_nodes = nodes_below(1,ydiag)
-    stop_nodes = nodes_below(box,ydiag)
+    subdiagram = subdiag(box,ydiag)
     for node in start_nodes:
-        if node in stop_nodes:
-            pass
-        else:
-            pass
+        current = node
+        while not current in subdiagram:
+            diagram[current] = {'r':None, 'd':None}
+            for key in diagram[current]:
+                if not ydiag[current][key] in subdiagram:
+                    diagram[current][key] = ydiag[current][key]
+            current = ydiag[current]['r']
+
+    return diagram
 
 
 
@@ -140,7 +145,8 @@ def main():
     print("Size of subdiagram at %d: %d" % (n,subdiag_size(n,ydiag)))
     print("Subdiagram:")
     print(subdiag(n,ydiag))
-
+    print("Diagram with sub deleted:")
+    print(delete_subdiag(n,ydiag))
 
 if __name__ == '__main__':
     main()
