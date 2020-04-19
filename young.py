@@ -88,6 +88,12 @@ def subdiag_size(box,ydiag):
         size += n
     return size
 
+def size(ydiag):
+    """
+    Return size of diagram
+    """
+    return subdiag_size(1,ydiag)
+
 def delete_subdiag(box,ydiag):
     """
     Given a young diagram and a box, return a young diagram with the subdiagram starting at box deleted
@@ -102,11 +108,12 @@ def main():
     ydiag = make_youngdiag(partition)
     print("Corresponding Young diagram:")
     print(ydiag)
+    print("Size of diagram: " + str(size(ydiag)))
     print("Enter box to find subshape:")
     n = int(input())
     print("Shape of subdiagram starting at %d:" % n)
     print(subshape(n,ydiag))
-    print("Subdiagram size at %d: %d" % (n,subdiag_size(n,ydiag)))
+    print("Size of subdiagram at %d: %d" % (n,subdiag_size(n,ydiag)))
 
 
 if __name__ == '__main__':
