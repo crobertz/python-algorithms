@@ -1,4 +1,4 @@
-def partitiontolist(partition):
+def partition_to_list(partition):
     """
     Given a partition of a positive integer n, returns list of lists where each element is an increasing list of integers.
 
@@ -14,7 +14,7 @@ def partitiontolist(partition):
 
     return return_list
 
-def makeyoungdiag(partition):
+def make_youngdiag(partition):
     """
     Given a partition, return corresponding Young diagram implemented as a graph
 
@@ -49,7 +49,7 @@ def makeyoungdiag(partition):
 
 def subshape(box,ydiag):
     """
-    Given a young diagram and box in the diagram, return shape of subdiagram whose top left corner starts at box
+    Given a young diagram and box in the diagram, returns shape of subdiagram whose top left corner starts at box
     """
 
     left_nodes = []
@@ -72,19 +72,31 @@ def subshape(box,ydiag):
 
     return subshape
 
+def subdiag_size(box,ydiag):
+    """
+    Given a young diagram and box in the diagram, returns size of subdiagram whose top left corner starts at box
+    """
+
+    shape = subshape(box,ydiag)
+    size = 0
+    for n in shape:
+        size += n
+    return size
 
 
 def main():
     print("Enter a parition in decreasing order:")
     partition = [int(n) for n in input().split()]
     print("Partition:")
-    print(partitiontolist(partition))
-    ydiag = makeyoungdiag(partition)
+    print(partition_to_list(partition))
+    ydiag = make_youngdiag(partition)
     print("Corresponding Young diagram:")
     print(ydiag)
+    print("Enter box to find subshape:")
     n = int(input())
     print("Shape of subdiagram starting at %d:" % n)
     print(subshape(n,ydiag))
+    print("Subdiagram size at %d: %d" % (n,subdiag_size(n,ydiag)))
 
 
 if __name__ == '__main__':
