@@ -21,6 +21,12 @@ class MurNakTest(unittest.TestCase):
         self.assertEqual(murnak.partition_to_list([]), [])
         self.assertEqual(murnak.partition_to_list([5]), [[1, 2, 3, 4, 5]])
 
+    def test_make_youngdiag(self):
+        self.assertEqual(murnak.make_youngdiag([]), {})
+        self.assertEqual(murnak.make_youngdiag([2, 1]), {1: {'r': 2, 'd': 3, 'l': None, 'u': None}, 2: {'r': None, 'd': None, 'l': 1, 'u': None}, 3: {'r': None, 'd': None, 'l': None, 'u': 1}})
+        self.assertEqual(murnak.make_youngdiag([3]), {1: {'r': 2, 'd': None, 'l': None, 'u': None}, 2: {'r': 3, 'd': None, 'l': 1, 'u': None}, 3: {'r': None, 'd': None, 'l': 2, 'u': None}})
+        self.assertEqual(murnak.make_youngdiag([1, 1, 1]), {1: {'r': None, 'd': 2, 'l': None, 'u': None}, 2: {'r': None, 'd': 3, 'l': None, 'u': 1}, 3: {'r': None, 'd': None, 'l': None, 'u': 2}})
+
 
 if __name__ == '__main__':
     unittest.main()
