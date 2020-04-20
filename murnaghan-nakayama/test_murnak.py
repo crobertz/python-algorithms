@@ -16,6 +16,11 @@ class MurNakTest(unittest.TestCase):
             murnak.character([3, 2, 1], [2, 2])
             self.assertEqual(cm.exception, "Need two partitions of same integer")
 
+    def test_partition_to_list(self):
+        self.assertEqual(murnak.partition_to_list([3, 2]), [[1, 2, 3], [4, 5]])
+        self.assertEqual(murnak.partition_to_list([]), [])
+        self.assertEqual(murnak.partition_to_list([5]), [[1, 2, 3, 4, 5]])
+
 
 if __name__ == '__main__':
     unittest.main()
