@@ -20,7 +20,7 @@ def eratosthenes(n):
     return(primes)
 
 def main():
-    n = int(sys.argv[1])
+    n = int(input())
     primes = eratosthenes(n)
     print("number of primes less than %d:" % n)
     print(primes)
