@@ -2,7 +2,10 @@
 
 Various algorithms implemented in python.
 
-### `erasieve`
+### `numbertheory`
+Number theoretic algorithms.
+
+# erasieve
 Sieve of Eratosthenes for finding prime numbers below a given integer.
 
 ### `murnaghan-nakayama`
