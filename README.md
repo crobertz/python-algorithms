@@ -5,7 +5,7 @@ Various algorithms implemented in python.
 ### numbertheory
 Number theoretic algorithms.
 
-#### 'erasieve'
+#### `erasieve`
 Sieve of Eratosthenes for finding prime numbers below a given integer.
 
 ### murnaghan-nakayama
