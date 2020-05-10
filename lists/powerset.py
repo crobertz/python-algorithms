@@ -1,3 +1,5 @@
+from itertools import chain, combinations
+
 def powerset(n):
     """
     Given positive integer n, returns powerset of {0,1,...,n-1}
@@ -33,3 +35,9 @@ def powerset(n):
         prev_subsets = new_subsets
     
     return subsets
+
+# using itertools
+def powerset_iter(n):
+    """returns generator for powerset of {0,1,...,n-1}"""
+    # chain r-combinations generator for r=0, 1,..., n
+    return chain.from_iterable(combinations(range(n), r) for r in range(n+1))
