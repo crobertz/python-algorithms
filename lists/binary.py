@@ -1,40 +1,23 @@
-def binarysearch_slice(A, target):
-    """given a sorted array A checks if target is in A using list slicing"""
+def binarysearch(A, target, left=0, right=len(A)-1):
+    """Searches A for target and returns 'Found' if found and 'Not found' otherwise"""
+    
+    # base cases
     if not A:
-        return "Target not found."
-    index = len(A) // 2
-    mid = A[index]
-    if mid == target:
-        return "Target found."
+        return 'Not found'
     if len(A) == 1:
-        return "Target not found."
-    else:
-        if mid < target:
-            return binarysearch_slice(A[index:], target)
+        if A[0] == target:
+            return 'Found'
         else:
-            return binarysearch_slice(A[:index], target)
-
-def binarysearch(A, target):
-    """given a sorted array A check if target is in A and return index for target"""
-    index = len(A) // 2
-    increment = index
-
-    while increment > 0:
-        increment = increment // 2
-        if A[index] == target:
-            return "Target found at {}.".format(index)
-        if A[index] < target:
-            index += increment
-        else:
-            index -= increment
+            return 'Not found'
     
-    # since floor(floor(x/b)/a) = floor(x/(ab)) can be off by at most 1
-    for j in [-1,0,1]:
-        if index + j >= 0 and index + j < len(A):
-            if A[index + j] == target:
-                return "Target found at {}.".format(index + j)
+    # recursion
+    mid = (left + right) // 2
+    if A[mid] == target:
+        return 'Found'
+    if A[mid] < target:
+        return binarysearch(A, target, mid, right)
+    if A[mid] > target:
+        return binarysearch(A, target, left, mid)
     
-    return "Target not found."
-
 
 print(binarysearch([1,2,3,4,5,6,7,8], 1))
