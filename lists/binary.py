@@ -7,7 +7,7 @@ def binarysearch(A, target, left=0, right=None):
     if right == None:
         right = len(A)-1
     if left == right:
-        if A[0] == target:
+        if A[left] == target:
             return 'Found'
         else:
             return 'Not found'
@@ -18,9 +18,9 @@ def binarysearch(A, target, left=0, right=None):
     if A[mid] == target:
         return 'Found'
     if A[mid] < target:
-        return binarysearch(A, target, mid, right)
+        return binarysearch(A, target, mid+1, right)
     if A[mid] > target:
-        return binarysearch(A, target, left, mid)
+        return binarysearch(A, target, left, mid-1)
     
 
-print(binarysearch([1,2,3,4,5,6,7,8], 0))
+print(binarysearch([1,2,3,4,5,6,7,8], 3))
