@@ -8,7 +8,7 @@ def binarysearch(A, target, left=0, right=None):
         right = len(A)-1
     if left == right:
         if A[left] == target:
-            return 'Found'
+            return 'Found {} at index {}'.format(target, left)
         else:
             return 'Not found'
     
@@ -16,7 +16,7 @@ def binarysearch(A, target, left=0, right=None):
     mid = (left + right) // 2
 
     if A[mid] == target:
-        return 'Found'
+        return 'Found {} at index {}'.format(target, mid)
     if A[mid] < target:
         return binarysearch(A, target, mid+1, right)
     if A[mid] > target:
