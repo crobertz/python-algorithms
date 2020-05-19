@@ -48,10 +48,10 @@ def dijkstra(graph, source):
                 heapq.heapify(to_visit)
     
     return visited
-
-graph = {0:{(1,10), (3,5)}, 1:{(2,1), (3,2)}, 2:{(4,4)}, 3:{(1,3), (2,9), (4,2)}, 4:{(2,6), (0,7)}}
-for source in graph:
-    shortestpaths = dijkstra(graph, source)
-    print('source: {}'.format(source))
-    for node in shortestpaths:
-        print('{}: distance:{}, prev:{}'.format(node, shortestpaths[node][0], shortestpaths[node][1]))
+if __name__ == "__main__":
+    graph = {0:{(1,10), (3,5)}, 1:{(2,1), (3,2)}, 2:{(4,4)}, 3:{(1,3), (2,9), (4,2)}, 4:{(2,6), (0,7)}}
+    for source in graph:
+        shortestpaths = dijkstra(graph, source)
+        print('source: {}'.format(source))
+        for node in shortestpaths:
+            print('{}: distance:{}, prev:{}'.format(node, shortestpaths[node][0], shortestpaths[node][1]))
